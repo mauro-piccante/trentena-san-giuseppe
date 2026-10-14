@@ -21,4 +21,7 @@ Tutto resta nel browser (localStorage). Nulla viene inviato a server.
 Trentena a San Giuseppe delle Suore del Verbo Incarnato:
 https://elefantsoftware.altervista.org/rosario/preghiere/trentena_a_san_giuseppe.htm
 
-Il segno di croce iniziale e finale è un'aggiunta della pagina.
+La conclusione segue l'originale spagnolo "Treintena a San José"
+(https://sanjoseytodoslossantos.blogspot.com/2021/08/treintena-san-jose.html): richiesta per i
+propri cari, versetto, orazione, "A te, o beato Giuseppe" di Leone XIII, Padre nostro, Ave Maria
+e Gloria. Il segno di croce iniziale e finale è un'aggiunta della pagina.

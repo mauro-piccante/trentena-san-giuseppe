@@ -69,6 +69,7 @@ footer{text-align:center;font:400 12px/1.6 Inter,sans-serif;color:var(--muted);p
 <footer>Testo della Trentena a San Giuseppe diffuso dalle Suore del Verbo Incarnato.<br>Trenta giorni in riverenza ai trent’anni che San Giuseppe visse con Gesù e Maria.<br>Solennità di San Giuseppe: 19 marzo (iniziando il 18 febbraio si conclude nel giorno della festa).</footer>
 <script>
 const FONTE='https://elefantsoftware.altervista.org/rosario/preghiere/trentena_a_san_giuseppe.htm';
+const FONTE_ES='https://sanjoseytodoslossantos.blogspot.com/2021/08/treintena-san-jose.html';
 const N=30;
 
 const INTRO=[
@@ -92,6 +93,13 @@ const PETIZ=[
 ];
 const FINALE=`O mio buon patriarca san Giuseppe, io, ispirato dagli insegnamenti della santa Chiesa e dei suoi dottori e teologi, e dal senso universale del popolo cristiano, sento in me una forza misteriosa che mi obbliga a chiederti e supplicarti e sperare che tu mi ottenga da Dio la grande e straordinaria grazia che metterò davanti al tuo trono di bontà e potere nel cielo.`;
 const OREMUS=`Oh Dio, che con ineffabile Provvidenza eleggesti il beato san Giuseppe come sposo della tua Madre Santissima, ti preghiamo che ci conceda di avere come intercessore nel Cielo, colui che veneriamo come protettore sulla terra, che vive e regna nei secoli dei secoli. Amen.`;
+
+const PER_CARI=`Ottieni anche per i miei cari e per coloro che mi hanno chiesto di pregare per loro tutto ciò che desiderano e che è loro conveniente.`;
+const A_TE=`A te, o beato Giuseppe, stretti dalla tribolazione ricorriamo, e fiduciosi invochiamo il tuo patrocinio, dopo quello della tua Santissima Sposa. Per quel sacro vincolo di carità, che ti strinse all’Immacolata Vergine Madre di Dio, e per l’amore paterno che portasti al fanciullo Gesù, riguarda, te ne preghiamo, con occhio benigno, la cara eredità che Gesù Cristo acquistò col suo sangue, e col tuo potere ed aiuto sovvieni ai nostri bisogni.
+Proteggi, o provvido custode della divina Famiglia, l’eletta prole di Gesù Cristo; allontana da noi, o padre amatissimo, gli errori e i vizi che ammorbano il mondo; assistici propizio dal cielo in questa lotta contro il potere delle tenebre, o nostro fortissimo protettore; e come un tempo salvasti dalla morte la minacciata vita del pargoletto Gesù, così ora difendi la santa Chiesa di Dio dalle ostili insidie e da ogni avversità; e stendi ognora sopra ciascuno di noi il tuo patrocinio, affinché a tuo esempio e mediante il tuo soccorso, possiamo virtuosamente vivere, piamente morire e conseguire l’eterna beatitudine in cielo. Amen.`;
+const PATER=`Padre nostro, che sei nei cieli, sia santificato il tuo nome, venga il tuo regno, sia fatta la tua volontà, come in cielo così in terra. Dacci oggi il nostro pane quotidiano, e rimetti a noi i nostri debiti come anche noi li rimettiamo ai nostri debitori, e non abbandonarci alla tentazione, ma liberaci dal male. Amen.`;
+const AVE=`Ave, o Maria, piena di grazia, il Signore è con te. Tu sei benedetta fra le donne e benedetto è il frutto del tuo seno, Gesù. Santa Maria, Madre di Dio, prega per noi peccatori, adesso e nell’ora della nostra morte. Amen.`;
+const GLORIA=`Gloria al Padre e al Figlio e allo Spirito Santo. Come era nel principio, e ora e sempre, nei secoli dei secoli. Amen.`;
 
 /* ---------- stato (salvato solo nel browser) ---------- */
 const KEY='trentena-sg';
@@ -168,9 +176,20 @@ app.innerHTML=`
 
   <p style='margin-top:14px'>${FINALE}</p>
   <div class='grace'>Si chiede la grazia che si desidera ottenere.<span class='int' id='intShow'>${S.intention.trim()?esc(S.intention.trim()):'[la grazia che chiedi]'}</span></div>
+  <p>${PER_CARI}</p>
+  <p><span class='v'>V.</span>San Giuseppe, prega per noi.<br><span class='v'>R.</span>Perché siamo resi degni delle promesse di Cristo.</p>
+  <h3>Preghiamo</h3>
   <p>${OREMUS}</p>
+
+  <h3>Preghiera a San Giuseppe</h3>
+  ${A_TE.split('\n').map(x=>`<p>${x}</p>`).join('')}
+  <p class='rubric'>Di papa Leone XIII, dall’enciclica Quamquam pluries (1889).</p>
+
+  <p>${PATER}</p>
+  <p>${AVE}</p>
+  <p>${GLORIA}</p>
   <p><span class='v'>✝</span>Nel nome del Padre e del Figlio e dello Spirito Santo. Amen.</p>
-  <p class='rubric'>Testo dalla <a href='${FONTE}' target='_blank' rel='noopener'>Trentena a San Giuseppe</a> delle Suore del Verbo Incarnato. Il segno di croce iniziale e finale è un’aggiunta di questa pagina.</p>
+  <p class='rubric'>Testo dalla <a href='${FONTE}' target='_blank' rel='noopener'>Trentena a San Giuseppe</a> delle Suore del Verbo Incarnato. La conclusione segue l’originale spagnolo della <a href='${FONTE_ES}' target='_blank' rel='noopener'>Treintena a San José</a>: la richiesta per i propri cari e il versetto sono tradotti da lì. Il segno di croce iniziale e finale è un’aggiunta di questa pagina.</p>
   <button class='btn ${isDone?'done':''}' onclick='mark()'>${isDone?`✓ Giorno ${day} pregato · tocca per annullare`:`Segna il giorno ${day} come pregato`}</button>
 </section>
 
