@@ -8,7 +8,8 @@ di Google Fonts; senza connessione usa i font di sistema.
 
 ## Cosa fa
 
-- Scegli la data di inizio: la pagina ti dice ogni giorno a che punto sei (giorno N di 30).
+- Scegli la data di inizio: il giorno avanza da solo man mano che segni i giorni pregati
+  (niente numeri da scegliere a mano).
 - Segni ogni giorno come pregato e le dodici suppliche mentre le reciti.
 - Ricorda dove sei arrivato: quando la riapri torna al giorno dopo l'ultimo pregato, oppure al giorno
   lasciato a metà, sulla prima supplica non ancora segnata.
