@@ -10,6 +10,8 @@ di Google Fonts; senza connessione usa i font di sistema.
 
 - Scegli la data di inizio: la pagina ti dice ogni giorno a che punto sei (giorno N di 30).
 - Segni ogni giorno come pregato e le dodici suppliche mentre le reciti.
+- Ricorda dove sei arrivato: quando la riapri torna al giorno dopo l'ultimo pregato, oppure al giorno
+  lasciato a metà, sulla prima supplica non ancora segnata.
 - Scrivi la grazia che chiedi: compare nel punto della preghiera in cui va presentata.
 
 Tutto resta nel browser (localStorage). Nulla viene inviato a server.

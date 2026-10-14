@@ -97,7 +97,7 @@ const OREMUS=`Oh Dio, che con ineffabile Provvidenza eleggesti il beato san Gius
 const KEY='trentena-sg';
 function load(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return {}}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
-const S=Object.assign({start:'',done:[],intention:'',size:19},load());
+const S=Object.assign({start:'',done:[],doneOn:{},beads:{},cur:0,intention:'',size:19},load());
 let day=1, beads=new Set();
 const app=document.getElementById('app'), nav=document.getElementById('nav');
 
@@ -108,26 +108,41 @@ function dateOf(n){const d=parse(S.start);d.setDate(d.getDate()+n-1);return d.to
 function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
 
 function fs(d){S.size=Math.min(26,Math.max(15,S.size+d));document.documentElement.style.setProperty('--fs',S.size+'px');save()}
-function setStart(v){S.start=v;save();const t=todayN();if(t>=1&&t<=N)day=t;drawNav();render()}
+function setStart(v){S.start=v;save();const t=todayN();if(t>=1&&t<=N&&!S.done.length)open_(t);drawNav();render()}
 function setInt(v){S.intention=v;save();const s=document.getElementById('intShow');if(s)s.textContent=v.trim()||'[la grazia che chiedi]'}
 function drawNav(){nav.innerHTML=Array.from({length:N},(_,i)=>`<button class='${i+1===day?'on':''} ${S.done.includes(i+1)?'ok':''}' onclick='go(${i+1})' aria-label='Giorno ${i+1}'>${i+1}</button>`).join('');const b=nav.children[day-1];b&&b.scrollIntoView({inline:'center',block:'nearest'})}
-function go(n){day=Math.min(N,Math.max(1,n));beads=new Set();drawNav();render();window.scrollTo({top:0,behavior:'smooth'})}
-function tog(i){beads.has(i)?beads.delete(i):beads.add(i);document.querySelectorAll('.bead')[i].classList.toggle('done');document.getElementById('bar').style.width=(beads.size/PETIZ.length*100)+'%';document.getElementById('cnt').textContent=beads.size}
-function mark(){const i=S.done.indexOf(day);i<0?S.done.push(day):S.done.splice(i,1);save();drawNav();render()}
-function reset(){if(confirm('Ricominciare la trentena? Si cancellano data di inizio e giorni segnati (l’intenzione resta).')){S.start='';S.done=[];save();go(1)}}
+function open_(n){day=Math.min(N,Math.max(1,n));beads=new Set(S.beads[day]||[]);S.cur=day;save()}
+function go(n){open_(n);drawNav();render();window.scrollTo({top:0,behavior:'smooth'})}
+function tog(i){beads.has(i)?beads.delete(i):beads.add(i);beads.size?S.beads[day]=[...beads]:delete S.beads[day];save();document.querySelectorAll('.bead')[i].classList.toggle('done');document.getElementById('bar').style.width=(beads.size/PETIZ.length*100)+'%';document.getElementById('cnt').textContent=beads.size}
+function mark(){const i=S.done.indexOf(day);if(i<0){S.done.push(day);S.doneOn[day]=iso(new Date());delete S.beads[day]}else{S.done.splice(i,1);delete S.doneOn[day]}save();drawNav();render()}
+function reset(){if(confirm('Ricominciare la trentena? Si cancellano data di inizio e giorni segnati (l’intenzione resta).')){S.start='';S.done=[];S.doneOn={};S.beads={};S.cur=0;save();go(1)}}
 
+/* dove eri arrivato: un giorno lasciato a metà, altrimenti il giorno dopo l’ultimo pregato */
+function lastDone(){return S.done.length?Math.max(...S.done):0}
+function half(){const d=Object.keys(S.beads).map(Number).filter(d=>!S.done.includes(d)&&S.beads[d].length);return d.length?(d.includes(S.cur)?S.cur:Math.max(...d)):0}
+function when(d){if(!d)return '';const t=new Date();t.setHours(0,0,0,0);const g=Math.round((t-parse(d))/864e5);return g===0?'oggi':g===1?'ieri':parse(d).toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'})}
+function resumeDay(){const h=half();if(h)return h;const l=lastDone();if(l)return S.doneOn[l]===iso(new Date())||l===N?l:l+1;const t=todayN();return t>=1&&t<=N?t:(S.cur||1)}
+function resumeBox(){
+const h=half(), l=lastDone();
+let html='';
+if(h)html=`<p class='today'>Ti eri fermato al <b>giorno ${h}</b>: avevi recitato ${S.beads[h].length} suppliche su ${PETIZ.length}.</p>`;
+else if(l)html=`<p class='today'>Ultimo giorno pregato: <b>il ${l}</b>${S.doneOn[l]?`, ${when(S.doneOn[l])}`:''}.${l<N&&S.doneOn[l]!==iso(new Date())?` Oggi continui con il <b>giorno ${l+1}</b>.`:''}</p>`;
+const target=h||(l&&l<N?l+1:0);
+if(target&&target!==day)html+=`<button class='link' onclick='go(${target})'>Riprendi dal giorno ${target}</button>`;
+return html}
 function render(){
 const t=todayN(), isDone=S.done.includes(day);
 let status;
 if(!S.start) status=`<p class='rubric'>Scegli il giorno in cui inizi: la pagina ti dirà ogni giorno a che punto sei.</p>`;
 else if(t<1) status=`<p class='today'>Inizierai <b>${dateOf(1)}</b>.</p>`;
 else if(t>N) status=`<p class='today'>La trentena si è conclusa <b>${dateOf(N)}</b>.</p>`;
-else status=`<p class='today'>Oggi è il <b>giorno ${t} di ${N}</b>${t!==day?` · <button class='link' onclick='go(${t})'>vai a oggi</button>`:''}</p>`;
+else status=`<p class='rubric'>Secondo il calendario oggi è il giorno ${t} di ${N}${t!==day?` · <button class='link' onclick='go(${t})'>vai al giorno ${t}</button>`:''}</p>`;
 
 app.innerHTML=`
 <section class='card'>
   <div class='label'>Il mio cammino</div>
   <div class='row'><label for='start'>Inizio</label><input type='date' id='start' value='${S.start}' onchange='setStart(this.value)'>${!S.start?`<button class='link' onclick='setStart("${iso(new Date())}")'>Inizio oggi</button>`:''}</div>
+  ${resumeBox()}
   ${status}
   <div class='progress'><i style='width:${S.done.length/N*100}%'></i></div>
   <p class='rubric'>${S.done.length} giorni su ${N} segnati come pregati.${S.start?` <button class='link' onclick='reset()'>Ricomincia</button>`:''}</p>
@@ -147,9 +162,9 @@ app.innerHTML=`
 
   <h3>Le dodici suppliche</h3>
   <p class='rubric'>Tocca ogni supplica per segnarla mentre preghi.</p>
-  <div class='progress'><i id='bar'></i></div>
-  <p class='rubric'><span id='cnt'>0</span> di ${PETIZ.length}</p>
-  ${PETIZ.map((x,i)=>`<button class='bead' data-n='${i+1}' onclick='tog(${i})'>${x}</button>`).join('')}
+  <div class='progress'><i id='bar' style='width:${beads.size/PETIZ.length*100}%'></i></div>
+  <p class='rubric'><span id='cnt'>${beads.size}</span> di ${PETIZ.length}</p>
+  ${PETIZ.map((x,i)=>`<button class='bead${beads.has(i)?' done':''}' data-n='${i+1}' onclick='tog(${i})'>${x}</button>`).join('')}
 
   <p style='margin-top:14px'>${FINALE}</p>
   <div class='grace'>Si chiede la grazia che si desidera ottenere.<span class='int' id='intShow'>${S.intention.trim()?esc(S.intention.trim()):'[la grazia che chiedi]'}</span></div>
@@ -166,8 +181,10 @@ app.innerHTML=`
 }
 
 document.documentElement.style.setProperty('--fs',S.size+'px');
-{const t=todayN();if(t>=1&&t<=N)day=t}
+open_(resumeDay());
 drawNav();render();
+/* se il giorno era a metà, porta alla prima supplica non ancora segnata */
+if(beads.size&&!S.done.includes(day)){const b=[...document.querySelectorAll('.bead')].find(x=>!x.classList.contains('done'));b&&setTimeout(()=>b.scrollIntoView({block:'center'}),150)}
 </script>
 </body>
 </html>
